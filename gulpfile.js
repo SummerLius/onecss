@@ -10,6 +10,7 @@ var gulpautoprefixer = require('gulp-autoprefixer');
 var autoprefixer = require('autoprefixer');
 var postcss = require('gulp-postcss');
 var sourcemaps = require('gulp-sourcemaps');
+var browserSync = require('browser-sync');
 
 // literal string
 // NOTE: a line separator will not be added automatically
@@ -39,6 +40,7 @@ gulp.task('build:style', function() {
         .pipe(postcss([autoprefixer({ browsers: ['last 5 versions', 'not ie < 8'] })]))
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(dist))
+        .pipe(browserSync.reload({ stream: true }))
         .pipe(csso())
         .pipe(rename(function(path) {
                 path.basename += '.min';
@@ -46,9 +48,57 @@ gulp.task('build:style', function() {
         .pipe(gulp.dest(dist));
 });
 
-gulp.task('sass:watch', function() {
-    gulp.watch('./test-sass/*.scss', ['sass']);
+gulp.task('build:example:html', function() {
+  gulp
+    .src('src/example/index.html', option)
+    .pipe(gulp.dest(dist))
+    .pipe(browserSync.reload({stream: true}));
 });
+
+gulp.task('build:example', ['build:example:html']);
+
+gulp.task('release', ['build:style', 'build:example']);
+
+gulp.task('watch', ['release'], function() {
+  gulp.watch('src/style/**/*', ['build:style']);
+  gulp.watch('src/**/*.html', ['build:example:html']);
+});
+
+gulp.task('server', function() {
+  browserSync.init({
+    server: {
+      baseDir: './dist'
+    },
+    ui: {
+      port: 8081,
+      weinre: {
+        port: 8082
+      }
+    },
+    port: 8080,
+    startPath: '/example'
+  });
+});
+
+// 参数说明
+//  -w: 实时监听
+//  -s: 启动服务器
+//  -p: 服务器启动端口，默认8080
+gulp.task('default', ['release'], function () {
+    gulp.start('server');
+    gulp.start('watch');
+});
+
+
+
+
+
+
+
+
+
+
+
 
 // .pipe(
 //     gulpautoprefixer({
@@ -75,8 +125,6 @@ gulp.task('sass:watch', function() {
 //             .pipe(gulp.dest('./test-sass/'))
 //     );
 // });
-
-gulp.task('default', ['build:style']);
 
 // // ejs style templating
 // gulp.src('./foo/*.js')

@@ -1,16 +1,21 @@
-// @import url('https://fonts.googleapis.com/css?family=Abril+Fatface');
-// @import url('https://fonts.googleapis.com/css?family=Amatic+SC');
-// @import url('https://fonts.googleapis.com/css?family=Ranga');
-// @import url('https://fonts.googleapis.com/css?family=Kumar+One+Outline');
-
 @import "fn";
 
+
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
 html {
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
+  font-size: 62.5%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  font-family: sans-serif;
 }
 
 body {
+    font-size: 1.6em;
     line-height: 1.6;
     font-family: $onecssFontDefault;
 }
